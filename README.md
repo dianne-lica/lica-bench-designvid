@@ -6,10 +6,31 @@ Benchmarks use the [Lica dataset](https://github.com/purvanshi/lica-dataset) (1,
 
 ## Benchmarks
 
-Each task is one of two types: **understanding** (answer a question or edit an artifact), or **generation** (produce a new artifact). 45 tasks span eight domains across 41 benchmarks:
+Each task is one of two types: **understanding** (answer a question or edit an artifact), or **generation** (produce a new artifact).
 
-| Domain | Tasks | Benchmarks | Description |
-|--------|------:|----------:|-------------|
+### Taxonomy (five domains)
+
+Counts below are **evaluation task lines** (how the benchmark suite is scoped). Typography understanding lists ten lines by counting the five fields in `typography-3` separately. Layout understanding lists eight lines; **four** of those do not yet have a shipped benchmark (layer order, rotation, crop shape, frame detection).
+
+| Domain | Understanding | Generation | Total |
+|--------|--------------:|-----------:|------:|
+| Layout | 8 | 4 | 12 |
+| Typography | 10 | 2 | 12 |
+| SVG & Vector | 5 | 5 | 10 |
+| Template & Semantics | 5 | 3 | 8 |
+| Animation | 3 | 3 | 6 |
+| **Total** | **31** | **17** | **48** |
+
+**Roll-up to code and data:** Layout → `layout-1`–`layout-7` and `image-1`–`image-2` (layer-aware inpainting). Typography → `typography-1`–`typography-8`. SVG & Vector → `svg-1`–`svg-8` and `lottie-1`–`lottie-2`. Template & Semantics → `category-1`–`category-2` and `template-1`–`template-6`. Animation → `temporal-1`–`temporal-6`.
+
+The module table below sums to **45** task lines: **48 − 45 = 3** because four layout-understanding rows are still to ship as benchmarks, while two inpainting benchmarks (`image-1`, `image-2`) map to **one** generation row on the grid (−1), net **+3** vs shipped lines.
+
+### By package module (41 benchmarks)
+
+The registry exposes **41** benchmark IDs across **eight** Python modules (mirrors `benchmarks/` folders):
+
+| Module | Task lines | Benchmarks | Description |
+|--------|----------:|----------:|-------------|
 | category | 2 | 2 | Design category classification and user intent prediction |
 | image | 2 | 2 | Layer-aware object insertion (reference-guided and description-guided) |
 | layout | 7 | 7 | Spatial reasoning over design canvases (aspect ratio, element counting, component type and detection) and layout generation (intent-to-layout, partial completion, aspect-ratio adaptation) |
@@ -17,7 +38,7 @@ Each task is one of two types: **understanding** (answer a question or edit an a
 | svg | 8 | 8 | SVG reasoning and editing (perceptual and semantic Q/A, bug fixing, optimization, style editing) and generation (text-to-SVG, image-to-SVG, combined input) |
 | template | 6 | 6 | Template matching, retrieval, clustering, and generation (style completion, color transfer, asset swap) |
 | temporal | 6 | 6 | Keyframe ordering, motion type classification, animation property extraction, and generation (animation parameters, motion trajectory, short-form video) |
-| typography | 12 | 8 | Font family, color, size / weight / alignment / letter spacing / line height* (single benchmark), style ranges, curvature, rotation, and generation (styled text element, styled text rendering to layout) |
+| typography | 12 | 8 | Font family, color, five fields in `typography-3`\*, style ranges, curved text, rotation, and generation (styled text element, styled text rendering to layout) |
 
 > \* `typography-3` (Text Params Estimation) expects one JSON object with five fields: `font_size`, `font_weight`, `text_align`, `letter_spacing`, and `line_height`.
 
