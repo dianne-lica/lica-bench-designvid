@@ -6,7 +6,7 @@ Benchmarks use the [Lica dataset](https://github.com/purvanshi/lica-dataset) (1,
 
 ## Benchmarks
 
-Each task is one of two types: **understanding** (answer a question or edit an artifact), or **generation** (produce a new artifact). 44 tasks span eight domains across 41 benchmarks:
+Each task is one of two types: **understanding** (answer a question or edit an artifact), or **generation** (produce a new artifact). 45 tasks span eight domains across 41 benchmarks:
 
 | Domain | Tasks | Benchmarks | Description |
 |--------|------:|----------:|-------------|
@@ -17,9 +17,9 @@ Each task is one of two types: **understanding** (answer a question or edit an a
 | svg | 8 | 8 | SVG reasoning and editing (perceptual and semantic Q/A, bug fixing, optimization, style editing) and generation (text-to-SVG, image-to-SVG, combined input) |
 | template | 6 | 6 | Template matching, retrieval, clustering, and generation (style completion, color transfer, asset swap) |
 | temporal | 6 | 6 | Keyframe ordering, motion type classification, animation property extraction, and generation (animation parameters, motion trajectory, short-form video) |
-| typography | 11 | 8 | Font family, color, size, weight, alignment, spacing*, curvature, style ranges, rotation, and generation (styled text element, styled text rendering to layout) |
+| typography | 12 | 8 | Font family, color, size / weight / alignment / letter spacing / line height* (single benchmark), style ranges, curvature, rotation, and generation (styled text element, styled text rendering to layout) |
 
-> \* `typography-3` (Text Params Estimation) covers size, weight, alignment, and spacing as a single benchmark.
+> \* `typography-3` (Text Params Estimation) expects one JSON object with five fields: `font_size`, `font_weight`, `text_align`, `letter_spacing`, and `line_height`.
 
 ## Getting started
 
