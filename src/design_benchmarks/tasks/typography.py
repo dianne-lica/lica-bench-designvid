@@ -245,7 +245,7 @@ class TextColorEstimation(BaseBenchmark):
 
 @benchmark
 class TextParamsEstimation(BaseBenchmark):
-    """typography-3 — Extract typographic properties (size, weight, align, spacing, line-height)."""
+    """typography-3 — Extract font size, weight, alignment, letter spacing, and line height."""
 
     pipeline_implemented = True
 
@@ -257,10 +257,21 @@ class TextParamsEstimation(BaseBenchmark):
         name="Text Params Estimation",
         task_type=TaskType.UNDERSTANDING,
         domain="typography",
-        description="Extract typographic properties (size, weight, align, spacing, line-height)",
+        description=(
+            "Extract font_size, font_weight, text_align, letter_spacing, and line_height "
+            "as one JSON object"
+        ),
         input_spec="Rendered text component (image)",
-        output_spec="JSON object of typographic properties",
-        metrics=["font_size_mae", "font_weight_accuracy", "text_align_accuracy"],
+        output_spec=(
+            "JSON object with keys font_size, font_weight, text_align, letter_spacing, line_height"
+        ),
+        metrics=[
+            "font_size_mae",
+            "font_weight_accuracy",
+            "text_align_accuracy",
+            "letter_spacing_mae",
+            "line_height_mae",
+        ],
     )
 
     def load_data(self, data_dir, *, n=None, dataset_root: Union[str, Path]):
