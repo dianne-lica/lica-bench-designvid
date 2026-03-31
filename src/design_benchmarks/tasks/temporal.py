@@ -2,7 +2,9 @@
 
   temporal-1  Keyframe Ordering
   temporal-2  Motion Type Classification (video-level, all variants)
-  temporal-3  Animation Property Extraction
+  temporal-3  Animation Property Extraction (per-component JSON; README counts three
+              timing task lines—clip/video duration, component duration, start time—plus
+              motion type, speed, direction in the same benchmark)
   temporal-4  Animation Parameter Generation (video gen from static layout)
   temporal-5  Motion Trajectory Generation (single-component entrance video)
   temporal-6  Short-Form Video Layout Generation (text-only video gen)
@@ -409,7 +411,8 @@ class AnimationPropertyExtraction(BaseBenchmark):
         domain="temporal",
         description=(
             "Extract per-component animation properties (motion type, duration, start offset, "
-            "speed, direction)"
+            "speed, direction). For reporting, duration is split into video/clip vs "
+            "per-component duration task lines; start time is a separate task line from duration."
         ),
         input_spec="Animation video (MP4)",
         output_spec="JSON array of per-component animation property objects",
