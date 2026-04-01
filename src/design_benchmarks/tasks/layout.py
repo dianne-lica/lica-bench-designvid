@@ -43,6 +43,7 @@ class IntentToLayoutGeneration(BaseBenchmark):
         name="Intent-to-Layout Generation",
         task_type=TaskType.GENERATION,
         domain="layout",
+        data_subpath="layout/layout2-intention-to-layout-generation",
         description="Generate a flattened design image from user intent",
         input_spec="Intent prompt + required on-canvas texts",
         output_spec="Rendered layout image",
@@ -1435,6 +1436,7 @@ class PartialLayoutCompletion(IntentToLayoutGeneration):
         name="Visual-Element-Contents-Aware Layout Generation (Single)",
         task_type=TaskType.GENERATION,
         domain="layout",
+        data_subpath="layout/layout-3-partial-layout-completion",
         description=(
             "Predict placement of one random top-layer element from provided component content"
         ),
@@ -3458,6 +3460,7 @@ class AspectRatioAdaptation(PartialLayoutCompletion):
         name="Aspect-Ratio Adaptation",
         task_type=TaskType.GENERATION,
         domain="layout",
+        data_subpath="layout/layout4-multi-aspect-ratio",
         description="Adapt a layout from long canvas to square canvas",
         input_spec=(
             "Source composite image (long ratio) + separated component assets + "
@@ -4554,6 +4557,7 @@ class AspectRatioClassification(BaseBenchmark):
         name="Aspect Ratio Classification",
         task_type=TaskType.UNDERSTANDING,
         domain="layout",
+        data_subpath="layout/AspectRatioClassification",
         description="Classify canvas aspect ratio from ~10 common ratios",
         input_spec="Rendered layout image",
         output_spec="Aspect ratio label (e.g. 16:9)",
@@ -4600,6 +4604,7 @@ class ComponentCount(BaseBenchmark):
         name="Component Count",
         task_type=TaskType.UNDERSTANDING,
         domain="layout",
+        data_subpath="layout/ComponentCount",
         description="Count the number of visible components in a layout",
         input_spec="Rendered layout image",
         output_spec="Integer component count",
@@ -4641,6 +4646,7 @@ class ComponentClassification(BaseBenchmark):
         name="Component Classification",
         task_type=TaskType.UNDERSTANDING,
         domain="layout",
+        data_subpath="layout/ComponentClassification",
         description="Classify component type (text, image, vector, or group) from layout and coordinates",
         input_spec="Rendered layout image + component location",
         output_spec="Component type label",
@@ -4690,6 +4696,7 @@ class ComponentDetection(BaseBenchmark):
         name="Component Detection",
         task_type=TaskType.UNDERSTANDING,
         domain="layout",
+        data_subpath="layout/ComponentDetection",
         description="Detect all components with bounding boxes and type labels",
         input_spec="Rendered layout image",
         output_spec="JSON list of detections (bbox, label, score)",
@@ -4796,9 +4803,6 @@ class _LayerInsertionImageUtils:
             return (0, 0)
 
 
-_LayerInsertionTextRemoval = _LayerInsertionImageUtils
-
-
 @benchmark
 class LayerAwareObjectInsertion(BaseBenchmark):
     """layout-8 — Layer-aware object insertion (G15). Manifest ``mode``: reference | description."""
@@ -4810,6 +4814,7 @@ class LayerAwareObjectInsertion(BaseBenchmark):
         name="Layer-Aware Object Insertion & Asset Synthesis",
         task_type=TaskType.GENERATION,
         domain="layout",
+        data_subpath="image/image-9-10-Layer-Aware Inpainting",
         description=(
             "Insert an object into a masked layout region using either a reference "
             "asset image or a textual description (per-sample mode)"
@@ -5168,7 +5173,7 @@ class LayerAwareObjectInsertion(BaseBenchmark):
             "benchmark_id": self.meta.id,
             "sample_id": str(sample.get("sample_id") or ""),
         }
-        width, height = _LayerInsertionTextRemoval._read_image_size(sample.get("input_image"))
+        width, height = _LayerInsertionImageUtils._read_image_size(sample.get("input_image"))
         if width > 0 and height > 0:
             metadata["target_width"] = width
             metadata["target_height"] = height
@@ -5287,18 +5292,18 @@ class LayerAwareObjectInsertion(BaseBenchmark):
 
         for pred_raw, gt_raw in zip(predictions, ground_truth):
             gt = self._normalize_gt_bundle(gt_raw)
-            pred_img = _LayerInsertionTextRemoval._to_rgb_array(self._extract_image_like(pred_raw))
-            gt_img = _LayerInsertionTextRemoval._to_rgb_array(self._extract_image_like(gt["image"]))
-            ref_img = _LayerInsertionTextRemoval._to_rgb_array(self._extract_image_like(gt["reference_asset"]))
+            pred_img = _LayerInsertionImageUtils._to_rgb_array(self._extract_image_like(pred_raw))
+            gt_img = _LayerInsertionImageUtils._to_rgb_array(self._extract_image_like(gt["image"]))
+            ref_img = _LayerInsertionImageUtils._to_rgb_array(self._extract_image_like(gt["reference_asset"]))
 
             if pred_img is None or gt_img is None:
                 continue
 
-            pred_img = _LayerInsertionTextRemoval._resize_to_match(pred_img, gt_img.shape[:2])
+            pred_img = _LayerInsertionImageUtils._resize_to_match(pred_img, gt_img.shape[:2])
             evaluated += 1
 
-            real_feat = _LayerInsertionTextRemoval._inception_feature(gt_img)
-            gen_feat = _LayerInsertionTextRemoval._inception_feature(pred_img)
+            real_feat = _LayerInsertionImageUtils._inception_feature(gt_img)
+            gen_feat = _LayerInsertionImageUtils._inception_feature(pred_img)
             if real_feat is not None and gen_feat is not None:
                 fid_real_features.append(real_feat)
                 fid_gen_features.append(gen_feat)
@@ -5318,7 +5323,7 @@ class LayerAwareObjectInsertion(BaseBenchmark):
 
             mask = None
             if gt.get("mask"):
-                mask = _LayerInsertionTextRemoval._to_gray_mask(gt["mask"], gt_img.shape[:2])
+                mask = _LayerInsertionImageUtils._to_gray_mask(gt["mask"], gt_img.shape[:2])
 
             pred_obj = self._extract_object_region(pred_img, mask)
             ref_obj = self._extract_object_region(ref_img, None)
@@ -5506,7 +5511,7 @@ class LayerAwareObjectInsertion(BaseBenchmark):
     @classmethod
     def _lpips_distance(cls, img_a: np.ndarray, img_b: np.ndarray) -> float:
         if img_a.shape[:2] != img_b.shape[:2]:
-            img_b = _LayerInsertionTextRemoval._resize_to_match(img_b, img_a.shape[:2])
+            img_b = _LayerInsertionImageUtils._resize_to_match(img_b, img_a.shape[:2])
 
         if cls._lpips_bundle is None:
             try:

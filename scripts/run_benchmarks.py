@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Unified benchmark runner. Default task dirs: ``benchmark_data_paths`` + ``--dataset-root``.
+"""CLI to list and run design benchmarks (stub model, API providers, batch APIs).
 
 Usage:
     # Stub smoke test (no API keys)
@@ -11,7 +11,6 @@ Usage:
         --provider gemini --credentials auth/google-cloud-key.json \\
         --dataset-root data/lica-benchmarks-dataset
 
-    # Custom data layout (override)
     python scripts/run_benchmarks.py --benchmarks layout-1 \\
         --provider openai_image --model-id gpt-image-1.5 \\
         --data /path/to/custom/layout2_folder --dataset-root data/lica-benchmarks-dataset \\
@@ -39,9 +38,6 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List
 
-# Set API keys and options via your shell or a tool such as python-dotenv
-# (load a project-local .env from your own entrypoint if desired).
-
 try:
     from design_benchmarks import (
         BaseBenchmark,
@@ -58,20 +54,6 @@ except ModuleNotFoundError as exc:
     raise SystemExit(1) from exc
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
-
-
-def _resolve_run_data_dir(
-    benchmark_id: str,
-    data_override: str | None,
-    dataset_root: str | None,
-) -> str:
-    if data_override:
-        return data_override
-    if not dataset_root:
-        raise ValueError("Need --dataset-root or --data.")
-    from design_benchmarks.benchmark_data_paths import resolve_benchmark_data_dir
-
-    return str(resolve_benchmark_data_dir(benchmark_id, dataset_root))
 
 
 PROVIDER_TO_REGISTRY = {
@@ -248,8 +230,11 @@ def cmd_run(
         bench = registry.get(bid)
         print(f"\n[{bid}] {bench.meta.name}")
         try:
-            data_path = _resolve_run_data_dir(bid, data_override, dataset_root)
-        except (KeyError, FileNotFoundError, ValueError) as exc:
+            if data_override:
+                data_path = data_override
+            else:
+                data_path = str(bench.resolve_data_dir(dataset_root))
+        except FileNotFoundError as exc:
             print(f"  FAILED: {exc}")
             all_ok = False
             continue
@@ -260,7 +245,7 @@ def cmd_run(
             report = runner.run(
                 benchmark_ids=[bid],
                 models=models,
-                data_dir=data_path,
+                data_dir=data_override,
                 dataset_root=dataset_root,
                 n=n,
                 batch_size=batch_size,
@@ -280,7 +265,6 @@ def cmd_run(
             print(f"  FAILED: {e}")
             all_ok = False
 
-    # Save results — explicit -o overrides, otherwise default to outputs/
     if combined.results:
         if output_path:
             combined.save(output_path)
@@ -293,7 +277,6 @@ def cmd_run(
                 single.save(str(out_dir / f"{bid}.csv"))
             print(f"Saved to {out_dir}/")
 
-    # Save per-sample tracker logs (on by default)
     if not no_log and len(runner.tracker) > 0:
         log_dir = REPO_ROOT / "outputs"
         log_dir.mkdir(parents=True, exist_ok=True)
@@ -330,21 +313,25 @@ def cmd_submit(
 
     batch_runner = make_batch_runner(args.provider, **batch_kwargs)
 
-    data_dir = _resolve_run_data_dir(benchmark_id, args.data, args.dataset_root)
+    bench = registry.get(benchmark_id)
+    data_display = (
+        args.data
+        if args.data
+        else str(bench.resolve_data_dir(args.dataset_root))
+    )
 
-    print(f"\n[{benchmark_id}] {registry.get(benchmark_id).meta.name}")
-    print(f"  data: {data_dir}")
+    print(f"\n[{benchmark_id}] {bench.meta.name}")
+    print(f"  data: {data_display}")
     print(f"  provider: {args.provider} / {model_id}")
 
     manifest_data = runner.submit(
         benchmark_id,
         batch_runner,
-        data_dir=data_dir,
+        data_dir=args.data,
         dataset_root=args.dataset_root,
         n=args.n,
     )
 
-    # Save manifest
     extra = {"benchmark_id": benchmark_id}
     if args.provider == "gemini" and hasattr(batch_runner, "_last_submit_meta"):
         extra["job_prefix"] = batch_runner._last_submit_meta["job_prefix"]
@@ -473,7 +460,6 @@ def main() -> None:
     )
     parser.add_argument("--credentials", default=None)
 
-    # Sampling parameters (universal)
     parser.add_argument("--temperature", type=float, default=0.0)
     parser.add_argument(
         "--max-tokens",
@@ -496,7 +482,6 @@ def main() -> None:
         help="Presence penalty (vLLM, recommended 1.5 for Qwen3-VL)",
     )
 
-    # Provider-specific
     parser.add_argument(
         "--device", default="auto", help="HF device (auto/cpu/cuda/mps)"
     )
@@ -533,7 +518,6 @@ def main() -> None:
         help="Batch size for predict_batch() (vLLM/diffusion)",
     )
 
-    # Batch API
     parser.add_argument(
         "--bucket",
         default=None,
@@ -541,7 +525,6 @@ def main() -> None:
     )
     parser.add_argument("--poll-interval", type=int, default=30)
 
-    # Input modality (template benchmarks)
     parser.add_argument(
         "--input-modality",
         choices=["text", "image", "both"],
@@ -553,11 +536,10 @@ def main() -> None:
         ),
     )
 
-    # Run settings
     parser.add_argument(
         "--data",
         default=None,
-        help="Task data directory (default: under --dataset-root per benchmark_data_paths)",
+        help="Task data directory (default: under --dataset-root/benchmarks/ per benchmark)",
     )
     parser.add_argument(
         "--dataset-root",
@@ -587,9 +569,6 @@ def main() -> None:
         "--no-log", action="store_true", help="Disable per-sample tracker JSONL output"
     )
 
-    # --config: load JSON and set as defaults so CLI args take precedence.
-    # Configs can have a "models" dict mapping model_id → per-model overrides.
-    # Provider-level keys are applied first, then model-specific keys on top.
     _pre, _ = parser.parse_known_args()
     if _pre.config:
         with open(_pre.config, "r", encoding="utf-8") as _cf:
@@ -597,14 +576,12 @@ def main() -> None:
         _models_map = _config_data.pop("models", None)
         parser.set_defaults(**_config_data)
         if _models_map:
-            # Re-parse to pick up model_id and input_modality (from config or CLI)
             _pre2, _ = parser.parse_known_args()
             _mid = _pre2.model_id
             if _mid and _mid in _models_map:
                 _model_cfg = dict(_models_map[_mid])
                 _modality_overrides = _model_cfg.pop("modality_overrides", None)
                 parser.set_defaults(**_model_cfg)
-                # Apply per-modality overrides (e.g. text vs VL sampling params)
                 if _modality_overrides and _pre2.input_modality in _modality_overrides:
                     parser.set_defaults(**_modality_overrides[_pre2.input_modality])
 
@@ -638,13 +615,13 @@ def main() -> None:
             parser.error("--batch-submit requires exactly one --benchmarks ID")
         if not args.dataset_root:
             parser.error("--dataset-root required")
-        if not args.data:
-            try:
-                _resolve_run_data_dir(args.benchmarks[0], None, args.dataset_root)
-            except (KeyError, FileNotFoundError, ValueError) as exc:
-                parser.error(str(exc))
         registry = BenchmarkRegistry()
         registry.discover()
+        if not args.data:
+            try:
+                registry.get(args.benchmarks[0]).resolve_data_dir(args.dataset_root)
+            except FileNotFoundError as exc:
+                parser.error(str(exc))
         sys.exit(0 if cmd_submit(registry, args.benchmarks[0], args) else 1)
 
     models: Dict[str, Any] = {}
@@ -669,7 +646,6 @@ def main() -> None:
     if not args.dataset_root:
         parser.error("--dataset-root required")
 
-    # Map --input-modality CLI string to Modality enum
     _input_modality = None
     if args.input_modality:
         from design_benchmarks.models.base import Modality

@@ -17,9 +17,9 @@ logger = logging.getLogger(__name__)
 
 
 class BenchmarkRunner:
-    """Run registered benchmarks against one or more models.
+    """Run ``load_data`` → ``build_model_input`` → ``predict`` → ``evaluate`` per benchmark.
 
-    Pass ``data_dir``, ``dataset_root``, and ``BaseModel`` instances::
+    Example::
 
         from design_benchmarks.models import load_model
 
@@ -27,13 +27,9 @@ class BenchmarkRunner:
         report = runner.run(
             benchmark_ids=["typography-1"],
             models={"gemini": load_model("google", model_id="gemini-2.0-flash")},
-            data_dir="data/lica-benchmarks-dataset/benchmarks/typography/FontFamilyClassification",
             dataset_root="data/lica-benchmarks-dataset",
         )
         print(report.summary())
-
-    The runner calls each benchmark's ``load_data`` → ``build_model_input``
-    → ``model.predict`` → ``parse_model_output`` → ``evaluate`` pipeline.
     """
 
     def __init__(self, registry: BenchmarkRegistry) -> None:
@@ -190,7 +186,7 @@ class BenchmarkRunner:
         benchmark_ids: List[str],
         models: Dict[str, Any],
         *,
-        data_dir: Union[str, Path],
+        data_dir: Optional[Union[str, Path]] = None,
         dataset_root: Union[str, Path],
         n: Optional[int] = None,
         batch_size: Optional[int] = None,
@@ -209,8 +205,9 @@ class BenchmarkRunner:
             (build_model_input → predict → parse_model_output).
             Callables receive the ``ModelInput`` directly and must
             return the final prediction value.
-        data_dir : str or Path
-            Path to the task-specific data directory.
+        data_dir : str or Path, optional
+            Use this directory for every benchmark in the run. If ``None``,
+            each benchmark uses ``<dataset_root>/benchmarks/<data_subpath or domain>``.
         dataset_root : str or Path
             Top-level dataset directory.  Paths inside data files
             (CSV image_path, JSON data_root, etc.) are resolved against
@@ -250,16 +247,19 @@ class BenchmarkRunner:
         if save_root is not None:
             save_root.mkdir(parents=True, exist_ok=True)
 
+        override_dir = Path(data_dir).resolve() if data_dir is not None else None
+
         for bid in benchmark_ids:
             bench = self.registry.get(bid)
             report.results[bid] = {}
 
+            resolved_dir = override_dir or bench.resolve_data_dir(dataset_root)
             samples = bench.load_data(
-                data_dir, n=n, dataset_root=dataset_root,
+                resolved_dir, n=n, dataset_root=dataset_root,
             )
             logger.info(
                 "Loaded %d samples for %s from %s",
-                len(samples), bid, data_dir,
+                len(samples), bid, resolved_dir,
             )
 
             for model_name, model_or_fn in models.items():
@@ -403,7 +403,7 @@ class BenchmarkRunner:
         benchmark_id: str,
         batch_runner: Any,
         *,
-        data_dir: Union[str, Path],
+        data_dir: Optional[Union[str, Path]] = None,
         dataset_root: Union[str, Path],
         n: Optional[int] = None,
     ) -> Dict[str, Any]:
@@ -416,7 +416,12 @@ class BenchmarkRunner:
         from .inference import BatchRequest
 
         bench = self.registry.get(benchmark_id)
-        samples = bench.load_data(data_dir, n=n, dataset_root=dataset_root)
+        resolved_dir = (
+            Path(data_dir).resolve()
+            if data_dir is not None
+            else bench.resolve_data_dir(dataset_root)
+        )
+        samples = bench.load_data(resolved_dir, n=n, dataset_root=dataset_root)
         requests = [
             BatchRequest(
                 custom_id=s["sample_id"],

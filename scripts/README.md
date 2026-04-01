@@ -18,7 +18,7 @@ Single entry point for all benchmark operations.
 
 ### Downloaded data + stub model (no API keys)
 
-Use **`--stub-model`** with **`--dataset-root`** pointing at the Lica bundle root. Task folders under **`benchmarks/`** are chosen automatically per benchmark id; pass **`--data`** only to override.
+Use **`--stub-model`** with **`--dataset-root`** pointing at the Lica bundle root. Task directories under **`benchmarks/`** come from each benchmark's metadata; use **`--data`** for a custom path.
 
 ```bash
 python scripts/run_benchmarks.py --stub-model --benchmarks layout-3 \

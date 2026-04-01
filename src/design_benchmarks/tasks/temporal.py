@@ -236,6 +236,7 @@ class KeyframeOrdering(BaseBenchmark):
         name="Keyframe Ordering",
         task_type=TaskType.UNDERSTANDING,
         domain="temporal",
+        data_subpath="temporal/KeyframeOrdering",
         description="Sort shuffled keyframes into the correct temporal sequence",
         input_spec="Four shuffled keyframe images",
         output_spec="Permutation of frame indices (correct order)",
@@ -326,6 +327,7 @@ class MotionTypeClassificationVideo(BaseBenchmark):
         name="Motion Type Classification (Video)",
         task_type=TaskType.UNDERSTANDING,
         domain="temporal",
+        data_subpath="temporal/MotionTypeClassification",
         description="Classify primary animation entrance type from supported motion types",
         input_spec="Animation video (MP4)",
         output_spec="Motion type label",
@@ -409,6 +411,7 @@ class AnimationPropertyExtraction(BaseBenchmark):
         name="Animation Property Extraction",
         task_type=TaskType.UNDERSTANDING,
         domain="temporal",
+        data_subpath="temporal/AnimationPropertyExtraction",
         description=(
             "Extract per-component animation properties (motion type, duration, start offset, "
             "speed, direction). For reporting, duration is split into video/clip vs "
@@ -552,6 +555,7 @@ class AnimationParameterGeneration(BaseBenchmark):
         name="Animation Parameter Generation",
         task_type=TaskType.GENERATION,
         domain="temporal",
+        data_subpath="temporal/AnimationParameterGeneration",
         description="Generate animated video from static layout and animation parameters",
         input_spec="Static layout image + animation prompt",
         output_spec="Generated video (path or URI)",
@@ -612,6 +616,7 @@ class MotionTrajectoryGeneration(BaseBenchmark):
         name="Motion Trajectory Generation",
         task_type=TaskType.GENERATION,
         domain="temporal",
+        data_subpath="temporal/MotionTrajectoryGeneration",
         description="Generate single-component entrance animation video",
         input_spec="Static layout image + single-component motion prompt",
         output_spec="Generated video (path or URI)",
@@ -675,6 +680,7 @@ class ShortFormVideoLayoutGeneration(BaseBenchmark):
         name="Short-Form Video Layout Generation",
         task_type=TaskType.GENERATION,
         domain="temporal",
+        data_subpath="temporal/ShortFormVideoLayoutGeneration",
         description="Generate animated vertical video layout from marketing brief",
         input_spec="Marketing brief and aspect ratio (text only, no image input)",
         output_spec="Generated video (path or URI)",

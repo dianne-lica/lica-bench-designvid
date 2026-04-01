@@ -56,7 +56,7 @@ python scripts/run_benchmarks.py --list                     # enumerate tasks an
 python scripts/download_data.py                              # → data/lica-benchmarks-dataset/
 ```
 
-**`--dataset-root`** is the bundle root (contains `lica-data/` and `benchmarks/`). Task inputs default under `benchmarks/` per `design_benchmarks.benchmark_data_paths`; use **`--data`** to override.
+**`--dataset-root`** is the bundle root (contains `lica-data/` and `benchmarks/`). Task data is read from `benchmarks/` using each benchmark's metadata. Use **`--data`** to point at a specific directory.
 
 ### 4. Run benchmarks
 
@@ -150,7 +150,6 @@ lica-bench/
 │   ├── inference/          # Batch API runners, GCS helpers
 │   ├── utils/              # Shared helpers (image, text, layout path resolution)
 │   ├── base.py             # BaseBenchmark, BenchmarkMeta, TaskType, @benchmark
-│   ├── benchmark_data_paths.py  # benchmark id → benchmarks/ subpath
 │   ├── registry.py         # Auto-discovery via pkgutil.walk_packages
 │   └── runner.py           # BenchmarkRunner orchestration
 ├── scripts/
@@ -165,11 +164,7 @@ lica-bench/
 
 ```python
 from pathlib import Path
-from design_benchmarks import (
-    BenchmarkRegistry,
-    BenchmarkRunner,
-    resolve_benchmark_data_dir,
-)
+from design_benchmarks import BenchmarkRegistry, BenchmarkRunner
 from design_benchmarks.models import load_model
 
 root = Path("data/lica-benchmarks-dataset")
@@ -181,7 +176,6 @@ models = {"openai": load_model("openai", model_id="gpt-5.4")}
 report = runner.run(
     benchmark_ids=["svg-1"],
     models=models,
-    data_dir=resolve_benchmark_data_dir("svg-1", root),
     dataset_root=root,
     n=5,
 )

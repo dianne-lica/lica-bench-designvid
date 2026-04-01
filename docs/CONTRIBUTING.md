@@ -15,7 +15,6 @@ scripts/run_benchmarks.py   →  load_data → inference → evaluate
 | `src/design_benchmarks/base.py` | `BaseBenchmark`, `BenchmarkMeta`, `TaskType`, `@benchmark` decorator. |
 | `src/design_benchmarks/registry.py` | Auto-discovers all `@benchmark` classes via `pkgutil.walk_packages`. |
 | `scripts/run_benchmarks.py` | Runs benchmarks (`--dataset-root` required; `--data` optional). `--list` shows **ready**. |
-| `src/design_benchmarks/benchmark_data_paths.py` | Default `benchmarks/` subpath per benchmark id. |
 | `src/design_benchmarks/metrics/` | Reusable metric functions (IoU, FID, SSIM, LPIPS, edit distance, font-name normalisation). |
 | `src/design_benchmarks/utils/` | Shared helpers (image array handling, text cleanup, layout path resolution). |
 
@@ -30,14 +29,14 @@ Rules:
 
 - **`metadata.csv`** (under `lica-data/`) is the master index where tasks need it.
 - Paths under `lica-data/` are **nested by `template_id`** (not flat).
-- **`meta.domain`** should match the subdirectory name under `benchmarks/` for tasks that read from there.
+- **`meta.domain`** names the task module and often matches a top-level `benchmarks/<domain>/` folder. Set **`meta.data_subpath`** when inputs live in a subfolder (e.g. `layout/…`, or under `image/…`).
 - CSV `image_path` values are **relative to `--dataset-root`** (e.g. `lica-data/images/…`). The framework resolves them automatically.
 
 Full details in the root [README.md](../README.md#benchmark-dataset-layout).
 
 ## Adding a benchmark to an existing domain
 
-1. Open `src/design_benchmarks/tasks/<domain>.py` (e.g. `layout.py`). Add the id to `benchmark_data_paths.BENCHMARK_BUNDLE_SUBPATHS` when the release folder is fixed.
+1. Open `src/design_benchmarks/tasks/<domain>.py` (e.g. `layout.py`). Set **`data_subpath`** on `BenchmarkMeta` to the folder under `benchmarks/` that holds this task's files, or omit it when `benchmarks/<domain>/` is correct.
 
 2. Add a class:
 
@@ -57,7 +56,8 @@ class MyNewTask(BaseBenchmark):
         id="layout-9",                         # <domain>-<n>, unique in registry
         name="My New Layout Task",
         task_type=TaskType.UNDERSTANDING,      # or GENERATION
-        domain="layout",                       # matches the file / benchmarks/<domain>/
+        domain="layout",                       # usually matches tasks/<file>.py name
+        data_subpath="layout/MyTaskFolder",    # under <dataset_root>/benchmarks/
         description="One-line description",
         metrics=["accuracy"],
     )
@@ -94,7 +94,7 @@ python scripts/run_benchmarks.py --list | grep layout-9
 ### Conventions
 
 - **ID format:** `<domain>-<n>` (e.g. `layout-9`, `temporal-6`). **Ids must be unique** in the whole registry. When adding a task, use the next unused `<n>` in that domain (no gaps in the shipped set).
-- **`domain` field** must match the `tasks/*.py` filename and, for most tasks, the `benchmarks/<domain>/` folder in the Lica release.
+- **`domain` field** should match the `tasks/*.py` filename. **`data_subpath`** (if set) must match the folder layout under `benchmarks/` in the dataset release.
 - **All tasks must be fully implemented** — `load_data`, `build_model_input`, and `evaluate` must be real implementations with `pipeline_implemented = True`.
 - **Auto-discovery**: the registry uses `pkgutil.walk_packages` on the `design_benchmarks` package. You do **not** edit `registry.py` or import your class anywhere — just decorate with `@benchmark` and it is found.
 
@@ -151,11 +151,11 @@ python scripts/run_benchmarks.py --list | grep layout-9
 # 4. Download Lica data (includes benchmarks/layout/)
 python scripts/download_data.py
 
-# 5. Stub run (after adding benchmark_data_paths entry for layout-9)
+# 5. Stub run (after setting data_subpath for layout-9)
 python scripts/run_benchmarks.py --stub-model --benchmarks layout-9 \
     --dataset-root data/lica-benchmarks-dataset --n 5
 
-# Before the path map exists, pass --data explicitly:
+# Or pass --data explicitly:
 #   --data data/lica-benchmarks-dataset/benchmarks/layout/MyTaskFolder
 
 # 6. Real run
@@ -168,8 +168,7 @@ python scripts/run_benchmarks.py --benchmarks layout-9 \
 
 - [ ] `python scripts/run_benchmarks.py --list` shows your new id(s) as **ready**
 - [ ] `BenchmarkMeta.id` is unique (registry raises on duplicates)
-- [ ] `meta.domain` matches `tasks/<file>.py` name and the `benchmarks/<domain>/` tree in the dataset release
-- [ ] `BENCHMARK_BUNDLE_SUBPATHS` includes the new id (or document that `--data` is required)
+- [ ] `meta.domain` matches `tasks/<file>.py` name; `data_subpath` matches the dataset layout under `benchmarks/` (or omit if `benchmarks/<domain>/` is enough)
 - [ ] `pipeline_implemented = True` and all three pipeline methods are implemented
 - [ ] `load_data` raises a clear error if the resolved data directory is wrong
 - [ ] Shipped inputs under `benchmarks/<domain>/` are documented (dataset release + task docstrings)

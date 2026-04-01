@@ -25,9 +25,9 @@ class TaskType(Enum):
 class BenchmarkMeta:
     """Metadata describing a single benchmark task.
 
-    To add a new benchmark, create a ``BenchmarkMeta`` with at minimum
-    ``id``, ``name``, ``task_type``, ``domain``, and ``description``.
-    Use existing ``@benchmark`` classes under ``design_benchmarks.tasks`` as templates.
+    Required: ``id``, ``name``, ``task_type``, ``domain``, ``description``.
+    ``data_subpath`` is the path under ``<dataset_root>/benchmarks/`` for this
+    task's inputs; if empty, ``domain`` is used (one shared folder per domain).
     """
 
     id: str
@@ -35,6 +35,7 @@ class BenchmarkMeta:
     task_type: TaskType
     domain: str
     description: str
+    data_subpath: str = ""
     input_spec: str = ""
     output_spec: str = ""
     metrics: List[str] = field(default_factory=list)
@@ -171,6 +172,19 @@ class BaseBenchmark:
             f"{self.__class__.__name__}.load_data() is not implemented. "
             "Override it to load samples from a data directory."
         )
+
+    def resolve_data_dir(
+        self,
+        dataset_root: Union[str, Path],
+        *,
+        benchmarks_subdir: str = "benchmarks",
+    ) -> Path:
+        rel = self.meta.data_subpath or self.meta.domain
+        root = Path(dataset_root).resolve()
+        path = root / benchmarks_subdir / rel
+        if not path.is_dir():
+            raise FileNotFoundError(f"Missing benchmark data directory: {path}")
+        return path
 
     def build_model_input(
         self,
