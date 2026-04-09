@@ -98,7 +98,6 @@ python scripts/bucket_animation_videos.py --dataset-root data/lica-benchmarks-da
 
 Implementation: [`scripts/bucket_animation_videos.py`](scripts/bucket_animation_videos.py). Use `--final-dir` / `--no-final` to change where the slim JSON tree is written; use `--out-dir` for the full per-sample folders under `outputs/animation_buckets` (videos as symlinks by default, or `--copy` for full MP4 copies).
 
-**GitHub / size:** `animation_final` is on the order of **~1–2 MB** total and is **safe to commit**. Do **not** commit **`outputs/animation_buckets`** for handoff: it usually contains **symlinks** to MP4s under `data/`, which point at **absolute paths on one machine** and will not work for someone else. If you copy videos into buckets (`--copy`), that tree can be **very large** (GitHub rejects files **> 100 MB**). The Lica bundle itself stays under `data/` (gitignored).
 
 ### 5. API keys
 
