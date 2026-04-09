@@ -1,0 +1,15 @@
+{
+  "sample_id": "EAm2t22pbnGgDuhvr0e9",
+  "bundle_id": "EAm2t22pbnGgDuhvr0e9_r314_c0",
+  "component_id": "0-3",
+  "motion_type": "rise",
+  "image_src": "https://storage.googleapis.com/lica-video/ed57b293-8770-4aa1-9af2-14077f28e634.png",
+  "video_path": "lica-data/images/b5eef898-5a8a-40df-b44e-07fd665d00bf/EAm2t22pbnGgDuhvr0e9.mp4",
+  "duration_seconds": 0.56,
+  "start_time_seconds": 0.0,
+  "left": "-55.186px",
+  "top": "1460.77px",
+  "width": "289.801px",
+  "height": "252.489px",
+  "component_type": "IMAGE"
+}

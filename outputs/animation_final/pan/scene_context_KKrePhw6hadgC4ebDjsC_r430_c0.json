@@ -1,0 +1,15 @@
+{
+  "sample_id": "KKrePhw6hadgC4ebDjsC",
+  "bundle_id": "KKrePhw6hadgC4ebDjsC_r430_c0",
+  "component_id": "0-13",
+  "motion_type": "pan",
+  "image_src": null,
+  "video_path": "lica-data/images/c6d27ae1-67a6-467f-88ed-9e5688c5cdeb/KKrePhw6hadgC4ebDjsC.mp4",
+  "duration_seconds": 0.56,
+  "start_time_seconds": 0.0,
+  "left": "135.145px",
+  "top": "473.793px",
+  "width": "590.61px",
+  "height": "39.3333px",
+  "component_type": "TEXT"
+}

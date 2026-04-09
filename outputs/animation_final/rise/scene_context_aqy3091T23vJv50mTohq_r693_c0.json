@@ -1,0 +1,15 @@
+{
+  "sample_id": "aqy3091T23vJv50mTohq",
+  "bundle_id": "aqy3091T23vJv50mTohq_r693_c0",
+  "component_id": "0-8",
+  "motion_type": "rise",
+  "image_src": null,
+  "video_path": "lica-data/images/0f71743c-1cf1-4b71-9e4f-96967b010292/aqy3091T23vJv50mTohq.mp4",
+  "duration_seconds": 0.56,
+  "start_time_seconds": 0.0,
+  "left": "64.5px",
+  "top": "154.792px",
+  "width": "951px",
+  "height": "103.72px",
+  "component_type": "TEXT"
+}

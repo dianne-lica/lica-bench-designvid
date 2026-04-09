@@ -7,7 +7,10 @@ build/
 .env
 .env.*
 data/
-outputs/
+# Generated outputs (keep buckets/local runs private; symlinks break for other clones)
+outputs/*
+!outputs/animation_final/
+!outputs/animation_final/**
 jobs/
 auth/
 *.bin

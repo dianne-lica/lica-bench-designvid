@@ -1,0 +1,15 @@
+{
+  "sample_id": "1Okni6tFj315PiOVADBx",
+  "bundle_id": "1Okni6tFj315PiOVADBx_r34_c0",
+  "component_id": "0-4",
+  "motion_type": "rise",
+  "image_src": null,
+  "video_path": "lica-data/images/a37ecbc5-6003-420e-ad3b-f97eefeb6c78/1Okni6tFj315PiOVADBx.mp4",
+  "duration_seconds": 0.56,
+  "start_time_seconds": 0.0,
+  "left": "271.305px",
+  "top": "814.346px",
+  "width": "432.603px",
+  "height": "22.0933px",
+  "component_type": "TEXT"
+}

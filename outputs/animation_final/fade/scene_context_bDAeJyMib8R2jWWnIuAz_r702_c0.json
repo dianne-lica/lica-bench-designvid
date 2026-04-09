@@ -1,0 +1,15 @@
+{
+  "sample_id": "bDAeJyMib8R2jWWnIuAz",
+  "bundle_id": "bDAeJyMib8R2jWWnIuAz_r702_c0",
+  "component_id": "0-6",
+  "motion_type": "fade",
+  "image_src": null,
+  "video_path": "lica-data/images/37786ccf-49bc-45a5-af6f-43fe2215d7af/bDAeJyMib8R2jWWnIuAz.mp4",
+  "duration_seconds": 0.56,
+  "start_time_seconds": 0.0,
+  "left": "154.947px",
+  "top": "289.607px",
+  "width": "774.874px",
+  "height": "111.333px",
+  "component_type": "TEXT"
+}

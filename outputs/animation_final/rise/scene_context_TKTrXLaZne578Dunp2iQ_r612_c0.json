@@ -1,0 +1,15 @@
+{
+  "sample_id": "TKTrXLaZne578Dunp2iQ",
+  "bundle_id": "TKTrXLaZne578Dunp2iQ_r612_c0",
+  "component_id": "0-10",
+  "motion_type": "rise",
+  "image_src": null,
+  "video_path": "lica-data/images/2c715f52-f33b-4fa5-b85a-e78f7c0f0878/TKTrXLaZne578Dunp2iQ.mp4",
+  "duration_seconds": 0.56,
+  "start_time_seconds": 0.0,
+  "left": "345.518px",
+  "top": "1444.09px",
+  "width": "345.103px",
+  "height": "47.5425px",
+  "component_type": "TEXT"
+}

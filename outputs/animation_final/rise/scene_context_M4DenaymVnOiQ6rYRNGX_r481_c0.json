@@ -1,0 +1,15 @@
+{
+  "sample_id": "M4DenaymVnOiQ6rYRNGX",
+  "bundle_id": "M4DenaymVnOiQ6rYRNGX_r481_c0",
+  "component_id": "0-15",
+  "motion_type": "rise",
+  "image_src": null,
+  "video_path": "lica-data/images/d36d83f0-67cf-475b-bccb-bb925eb7e4cc/M4DenaymVnOiQ6rYRNGX.mp4",
+  "duration_seconds": 0.56,
+  "start_time_seconds": 0.0,
+  "left": "456.558px",
+  "top": "622.363px",
+  "width": "238.309px",
+  "height": "133.641px",
+  "component_type": "TEXT"
+}

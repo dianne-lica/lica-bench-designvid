@@ -1,0 +1,15 @@
+{
+  "sample_id": "WIcya7fVzluPSZ5kdqNT",
+  "bundle_id": "WIcya7fVzluPSZ5kdqNT_r623_c0",
+  "component_id": "0-0",
+  "motion_type": "pop",
+  "image_src": "https://storage.googleapis.com/lica-video/fcd4ea8c-6286-4280-8e48-6c1c0118fbb4.svg",
+  "video_path": "lica-data/images/f653a8d6-d7e3-477b-9382-a402ed271706/WIcya7fVzluPSZ5kdqNT.mp4",
+  "duration_seconds": 0.56,
+  "start_time_seconds": 0.0,
+  "left": "-473.22px",
+  "top": "-530.303px",
+  "width": "1892.99px",
+  "height": "2017.72px",
+  "component_type": "IMAGE"
+}

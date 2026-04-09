@@ -80,6 +80,26 @@ Use the same **`--dataset-root`** (Lica bundle root) for stub runs, API runs, an
 
 See [scripts/README.md](scripts/README.md) for batch submit/collect, vLLM, HuggingFace, multi-model comparison, config files, and all CLI flags.
 
+### Motion subset for rendering (`outputs/animation_final`)
+
+For **downstream rendering or motion work**, this repo ships a **small JSON export** of temporal-3 (**Animation Property Extraction**) samples grouped by motion type **`rise`**, **`fade`**, **`pop`**, and **`pan`**:
+
+| Location | Role |
+|----------|------|
+| [`outputs/animation_final/<motion>/`](outputs/animation_final/) | One `scene_context_<sample_id>_r<row>_c<comp>.json` per animated component |
+
+Each JSON file includes **`image_src`**, canvas placement **`left` / `top` / `width` / `height`** (from the layout), **`video_path`** (relative to the dataset root), **`motion_type`**, **`duration_seconds` / `start_time_seconds`**, and ids. Resolve `video_path` against your local `lica-benchmarks-dataset/` after [downloading data](#3-download-data).
+
+**Regenerate** (optional, if you refresh the bundle or change the script):
+
+```bash
+python scripts/bucket_animation_videos.py --dataset-root data/lica-benchmarks-dataset
+```
+
+Implementation: [`scripts/bucket_animation_videos.py`](scripts/bucket_animation_videos.py). Use `--final-dir` / `--no-final` to change where the slim JSON tree is written; use `--out-dir` for the full per-sample folders under `outputs/animation_buckets` (videos as symlinks by default, or `--copy` for full MP4 copies).
+
+**GitHub / size:** `animation_final` is on the order of **~1–2 MB** total and is **safe to commit**. Do **not** commit **`outputs/animation_buckets`** for handoff: it usually contains **symlinks** to MP4s under `data/`, which point at **absolute paths on one machine** and will not work for someone else. If you copy videos into buckets (`--copy`), that tree can be **very large** (GitHub rejects files **> 100 MB**). The Lica bundle itself stays under `data/` (gitignored).
+
 ### 5. API keys
 
 Set whichever provider(s) you need:

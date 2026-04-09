@@ -1,0 +1,15 @@
+{
+  "sample_id": "44ZMntKp3FqnLNiFoxdV",
+  "bundle_id": "44ZMntKp3FqnLNiFoxdV_r119_c0",
+  "component_id": "0-13",
+  "motion_type": "pop",
+  "image_src": null,
+  "video_path": "lica-data/images/cd578c80-6257-4b0c-80ef-a12cbf424661/44ZMntKp3FqnLNiFoxdV.mp4",
+  "duration_seconds": 0.56,
+  "start_time_seconds": 0.0,
+  "left": "223.823px",
+  "top": "108px",
+  "width": "632.883px",
+  "height": "221.151px",
+  "component_type": "TEXT"
+}

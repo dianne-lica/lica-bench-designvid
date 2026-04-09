@@ -1,0 +1,15 @@
+{
+  "sample_id": "NDKG7DE6NWeuCORuEpj0",
+  "bundle_id": "NDKG7DE6NWeuCORuEpj0_r510_c0",
+  "component_id": "0-6",
+  "motion_type": "rise",
+  "image_src": null,
+  "video_path": "lica-data/images/3464e035-6afc-4232-b75f-9155d9ee75ee/NDKG7DE6NWeuCORuEpj0.mp4",
+  "duration_seconds": 0.56,
+  "start_time_seconds": 0.0,
+  "left": "231.186px",
+  "top": "1504.33px",
+  "width": "617.628px",
+  "height": "290.431px",
+  "component_type": "TEXT"
+}

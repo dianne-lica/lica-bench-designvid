@@ -1,0 +1,15 @@
+{
+  "sample_id": "WIcya7fVzluPSZ5kdqNT",
+  "bundle_id": "WIcya7fVzluPSZ5kdqNT_r625_c0",
+  "component_id": "0-2",
+  "motion_type": "pop",
+  "image_src": null,
+  "video_path": "lica-data/images/f653a8d6-d7e3-477b-9382-a402ed271706/WIcya7fVzluPSZ5kdqNT.mp4",
+  "duration_seconds": 0.56,
+  "start_time_seconds": 0.0,
+  "left": "108px",
+  "top": "282.825px",
+  "width": "864px",
+  "height": "264.87px",
+  "component_type": "TEXT"
+}

@@ -1,0 +1,15 @@
+{
+  "sample_id": "YY8ZOgFDgwCIJJnQQxZE",
+  "bundle_id": "YY8ZOgFDgwCIJJnQQxZE_r650_c0",
+  "component_id": "0-1",
+  "motion_type": "fade",
+  "image_src": "https://storage.googleapis.com/lica-video/eda488b3-2ab3-4e3d-bb9c-26e4d7da19a1.svg",
+  "video_path": "lica-data/images/e5c689b0-e6b2-4894-9f3c-726bb4042108/YY8ZOgFDgwCIJJnQQxZE.mp4",
+  "duration_seconds": 0.56,
+  "start_time_seconds": 0.0,
+  "left": "0.0px",
+  "top": "840.0px",
+  "width": "1080px",
+  "height": "1080px",
+  "component_type": "IMAGE"
+}

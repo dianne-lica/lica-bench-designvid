@@ -1,0 +1,15 @@
+{
+  "sample_id": "Mj133t7KVMj0U9xUrzgS",
+  "bundle_id": "Mj133t7KVMj0U9xUrzgS_r503_c0",
+  "component_id": "0-9",
+  "motion_type": "fade",
+  "image_src": null,
+  "video_path": "lica-data/images/26824a1a-5a15-49f5-9273-b89b72e30cf5/Mj133t7KVMj0U9xUrzgS.mp4",
+  "duration_seconds": 0.56,
+  "start_time_seconds": 0.0,
+  "left": "70.6784px",
+  "top": "696.72px",
+  "width": "384.8px",
+  "height": "169.6px",
+  "component_type": "TEXT"
+}
